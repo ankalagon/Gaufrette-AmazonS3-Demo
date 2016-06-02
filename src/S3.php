@@ -8,14 +8,14 @@ use Gaufrette\Filesystem;
 
 class S3
 {
+    static $_config = '';
+
     public static function get($config)
     {
-        $s3client = S3Client::factory($config);
-        $adapter = new AwsS3Adapter($s3client, $config['bucketName'], [], true);
-        return new Filesystem($adapter);
+        self::$_config = $config;
 
-        $adapter = $this->filesystem->getAdapter();
-        $adapter->setMetadata($filename, array('contentType' => $file->getClientMimeType()));
-        $adapter->write($filename, file_get_contents($file->getPathname()));
+        $s3client = S3Client::factory(self::$_config);
+        $adapter = new AwsS3Adapter($s3client, self::$_config['bucketName'], [], true);
+        return new Filesystem($adapter);
     }
 }

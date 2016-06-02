@@ -5,6 +5,7 @@ namespace Tester;
 class Config
 {
     private static $_config = [];
+    private static $_location = [];
 
     public static function get($credentialsFile, $location = '')
     {
@@ -21,6 +22,25 @@ class Config
             throw new \RuntimeException(sprintf('Invalid location, no "%s" in config file', $location));
         }
 
-        return self::$_config[$location];
+        self::$_location = $location;
+        return self::$_config[self::$_location];
+    }
+
+    public static function getDomain()
+    {
+        if (isset(self::$_config[self::$_location]['domainName'])) {
+            return trim(self::$_config[self::$_location]['domainName'], '/').'/';
+        }
+
+        return '';
+    }
+
+    public static Function getCloudFrontDomain()
+    {
+        if (isset(self::$_config[self::$_location]['cloudFrontDomainName'])) {
+            return trim(self::$_config[self::$_location]['cloudFrontDomainName'], '/').'/';
+        }
+
+        return '';
     }
 }

@@ -38,8 +38,19 @@ if (0 == count($files)) {
 $filesystem = \Tester\S3::get($config);
 
 foreach ($files as $file) {
-    $filesystem->write(basename($file), file_get_contents($file), true);
-    $log->success(sprintf('Uploaded %s', basename($file)));
+    $rawFilename = $fileName = basename($file);
+    $filesystem->write($rawFilename, file_get_contents($file), true);
+
+    if (\Tester\Config::getDomain()) {
+        $fileName = \Tester\Config::getDomain().$rawFilename;
+    }
+
+    $log->success(sprintf('Uploaded %s',$fileName));
+
+    if (\Tester\Config::getCloudFrontDomain()) {
+        $fileName = \Tester\Config::getCloudFrontDomain().$rawFilename;
+        $log->success(sprintf('Uploaded %s',$fileName));
+    }
 }
 
 
